@@ -17,6 +17,7 @@ h1 {
   font-family: 'Roboto', sans-serif;
   color: #100c08;
   padding-top: 20px;
+  position: relative;
 }
 
 .container {
@@ -139,3 +140,29 @@ h1 {
   margin-right: auto;
   text-align: left;
 }
+
+/* .background {
+  position: fixed;
+  z-index: -10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: green;
+}
+
+.ftc {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background-color: #fff;
+  top: calc(50% - 175px);
+  left: calc(50% - 250px);
+  width: 500px;
+  border-radius: 5px;
+  box-shadow: 0 3px 5px 2px rgba(0, 0, 0, .3);
+  transition: all 0.3s ease-out;
+  transform: translateY(-100vh);
+  z-index: 20;
+} */
