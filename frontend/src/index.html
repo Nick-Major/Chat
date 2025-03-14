@@ -8,62 +8,53 @@
 </head>
 <body>
 	<div id="root">
-    <!-- <div class="container hidden">
-      <div class="chat__header">
-        <h1>Чат</h1>
+    <div class="container">
+      <div class="modal">
+        <form class="modal-form">
+          <label class="modal-title" for="nickname">Выберите псевдоним</label>
+          <input class="modal-input" type="text" id="nickname">
+          <button class="modal-btn" type="submit">Продолжить</button>
+        </form>
       </div>
-      <div class="chat__connect">Подключиться</div>
-      <div class="chat__container">
-        <div class="chat__area">
-          <div class="chat__messages-container">
-            <div class="message__container message__container-interlocutor">
-              <div class="message__header">Alexandra, 23:04 20.03.2019</div>
-              <div>I can't sleep...</div>
-            </div>
-            <div class="message__container message__container-yourself">
-              <div class="message__header">You, 23:10 20.03.2019</div>
-              <div>Listen this: <a href="https://youtu.be/xxxxxxx">https://youtu.be/xxxxxxx</a></div>
-            </div>
-            <div class="message__container message__container-interlocutor">
-              <div class="message__header">Alexandra, 01:15 21.03.2019</div>
-              <div>Thxx!!! You help me! I listen this music 1 hour and I sleep. Now is my favorite music!!!</div>
-            </div>
-            <div class="message__container message__container-interlocutor">
-              <div class="message__header">Petr, 01:25 21.03.2019</div>
-              <div>I subscribed just for that 😊😊😊</div>
-            </div>
+
+      <div class="chat-container hidden">
+        <div class="userlist">
+          <div class="chat-user">
+            <span class="circle"></span>
+            <span class="user-name">Alexandra</span>
           </div>
-          <div class="chat__messages-input">
-            <form class="form">
-              <div class="form__group">
-                <input type="text" class="form__input" placeholder="Type your message here">
-              </div>
-            </form>
+          <div class="chat-user">
+            <span class="circle"></span>
+            <span class="user-name">Petr</span>
           </div>
         </div>
-        <div class="chat__userlist">
-          <div class="chat__user">Alexandra</div>
-          <div class="chat__user">Petr</div>
+        <div class="chat">
+          <div class="message-viewing-area">
+            <div class="interlocutor-s-message">
+              <div class="interlocutor-information">
+                <span class="interlocutor-name">Alexandra</span>
+                <span class="interlocutor-message-date">23:04 20.03.2019</span>
+              </div>
+              <div class="interlocutor-message-container">
+                I can't sleep...
+              </div>
+            </div>
+            <div class="user-s-message">
+              <div class="user-s-information">
+                <span class="you-indicator">You</span>
+                <span class="yours-message-date">23:10 20.03.2019</span>
+              </div>
+              <div class="your-message">
+                Try to count the sheep
+              </div>
+            </div>
+          </div>
+          <form class="chat-form">
+            <input class="chat-input" type="text" placeholder="Type your message here" required>
+          </form>
         </div>
       </div>
     </div>
-    <div class="modal__background">
-      <div class="modal__content">
-        <div class="modal__header">Выберите псевдоним</div>
-        <div class="modal__body">
-          <form class="form">
-            <div class="form__group">
-              <label for="nickname" class="form__label">Псевдоним</label>
-              <input type="text" id="nickname" class="form__input" placeholder="Введите ваш псевдоним">
-            </div>
-          </form>
-        </div>
-        <div class="modal__footer">
-          <button class="modal__close">Отмена</button>
-          <button class="modal__ok">Продолжить</button>
-        </div>
-      </div>
-    </div> -->
   </div>
 </body>
 </html>

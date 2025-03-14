@@ -1,4 +1,5 @@
 import ChatAPI from "./api/ChatAPI";
+import Entity from "./api/Entity";
 
 export default class Chat {
   constructor(container) {
@@ -9,85 +10,94 @@ export default class Chat {
 
   init() {
     this.bindToDOM();
+    this.registerEvents();
   }
 
   bindToDOM() {
     const container = document.createElement('div');
-    container.classList.add('container', 'hidden');
+    container.classList.add('container');
 
     const modal = document.createElement('div');
-    modal.classList.add('modal__background');
-
-    container.innerHTML = `
-      <div class="chat__header">
-        <h1>Чат</h1>
-      </div>
-      <div class="chat__connect">Подключиться</div>
-      <div class="chat__container">
-        <div class="chat__area">
-          <div class="chat__messages-container">
-            <div class="message__container message__container-interlocutor">
-              <div class="message__header">Alexandra, 23:04 20.03.2019</div>
-              <div>I can't sleep...</div>
-            </div>
-            <div class="message__container message__container-yourself">
-              <div class="message__header">You, 23:10 20.03.2019</div>
-              <div>Listen this: <a href="https://youtu.be/xxxxxxx">https://youtu.be/xxxxxxx</a></div>
-            </div>
-            <div class="message__container message__container-interlocutor">
-              <div class="message__header">Alexandra, 01:15 21.03.2019</div>
-              <div>Thxx!!! You help me! I listen this music 1 hour and I sleep. Now is my favorite music!!!</div>
-            </div>
-            <div class="message__container message__container-interlocutor">
-              <div class="message__header">Petr, 01:25 21.03.2019</div>
-              <div>I subscribed just for that 😊😊😊</div>
-            </div>
-          </div>
-          <div class="chat__messages-input">
-            <form class="form">
-              <div class="form__group">
-                <input type="text" class="form__input" placeholder="Type your message here">
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="chat__userlist">
-          <div class="chat__user">Alexandra</div>
-          <div class="chat__user">Petr</div>
-        </div>
-      </div>
-    `
+    modal.classList.add('modal');
 
     modal.innerHTML = `
-      <div class="modal__content">
-        <div class="modal__header">Выберите псевдоним</div>
-        <div class="modal__body">
-          <form class="form">
-            <div class="form__group">
-              <label for="nickname" class="form__label">Псевдоним</label>
-              <input type="text" id="nickname" class="form__input" placeholder="Введите ваш псевдоним" required>
+    <form class="modal-form">
+      <label class="modal-title" for="nickname">Выберите псевдоним</label>
+      <input class="modal-input" type="text" id="nickname">
+      <button class="modal-btn" type="submit">Продолжить</button>
+    </form>`
+
+    const chatContainer = document.createElement('div');
+    chatContainer.classList.add('chat-container', 'hidden');
+
+    chatContainer.innerHTML = `
+      <div class="userlist">
+          <div class="chat-user">
+            <span class="circle"></span>
+            <span class="user-name">Alexandra</span>
+          </div>
+          <div class="chat-user">
+            <span class="circle"></span>
+            <span class="user-name">Petr</span>
+          </div>
+        </div>
+        <div class="chat">
+          <div class="message-viewing-area">
+            <div class="interlocutor-s-message">
+              <div class="interlocutor-information">
+                <span class="interlocutor-name">Alexandra</span>
+                <span class="interlocutor-message-date">23:04 20.03.2019</span>
+              </div>
+              <div class="interlocutor-message-container">
+                I can't sleep...
+              </div>
             </div>
+            <div class="user-s-message">
+              <div class="user-s-information">
+                <span class="you-indicator">You</span>
+                <span class="yours-message-date">23:10 20.03.2019</span>
+              </div>
+              <div class="your-message">
+                Try to count the sheep
+              </div>
+            </div>
+          </div>
+          <form class="chat-form">
+            <input class="chat-input" type="text" placeholder="Type your message here" required>
           </form>
         </div>
-        <div class="modal__footer">
-          <button class="modal__close">Отмена</button>
-          <button class="modal__ok">Продолжить</button>
-        </div>
-      </div>
     `
 
+    container.appendChild(modal);
+    container.appendChild(chatContainer);
     this.container.appendChild(container);
-    this.container.appendChild(modal);
   }
 
   registerEvents() {
-    const nicknameField = this.container.getElementById('nickname');
-    const okBtn = this.container.querySelector('modal__ok');
+    const modal = this.container.querySelector('.modal');
+    const modalForm = this.container.querySelector('.modal-form');
+    const chatContainer = this.container.querySelector('.chat-container');
 
-    okBtn.addEventListener('click', (e)=> {
+    modalForm.addEventListener('submit', (e)=> {
       e.preventDefault();
 
-      const username = nicknameField.value;
+      const username = modal.querySelector('.modal-input');
+      console.log(username);
+
+      this.api.create({name: username.value}, (response)=> {
+        if (response.status === 'error') {
+          alert(response.message);
+          username.value = '';
+          return;
+        };
+
+        console.log(response.status);
+
+
+        chatContainer.classList.remove('hidden');
+        modal.classList.add('hidden');
+      })
+
     })
   }
 
