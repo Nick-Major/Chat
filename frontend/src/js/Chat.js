@@ -86,6 +86,7 @@ export default class Chat {
 
         console.log(response);
         this.user = response.user;
+        this.currentUserId = this.user.id;
         this.users.push(this.user);
         const chatUser = document.createElement('div');
         chatUser.classList.add('chat-user');
@@ -132,8 +133,6 @@ export default class Chat {
       
       if (Array.isArray(data)) {
         this.onEnterChatHandler(data);
-      } else if(data.user.id) {
-        this.currentUserId = data.user.id;
       }
     };
 
