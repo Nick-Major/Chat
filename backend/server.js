@@ -61,6 +61,8 @@ const wsServer = new WebSocketServer({ server });
 wsServer.on("connection", (ws) => {
   ws.on("message", (msg, isBinary) => {
     const receivedMSG = JSON.parse(msg);
+    console.log('receivedMSG', receivedMSG);
+    
     logger.info(`Message received: ${JSON.stringify(receivedMSG)}`);
     // обработка выхода пользователя
     if (receivedMSG.type === "exit") {

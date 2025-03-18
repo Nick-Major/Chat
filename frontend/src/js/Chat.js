@@ -6,6 +6,8 @@ export default class Chat {
     this.container = container;
     this.api = new ChatAPI();
     this.websocket = null;
+    this.users = [];
+    this.currentUserId = null;
   }
 
   init() {
@@ -31,16 +33,7 @@ export default class Chat {
     chatContainer.classList.add('chat-container', 'hidden');
 
     chatContainer.innerHTML = `
-      <div class="userlist">
-          <div class="chat-user">
-            <span class="circle"></span>
-            <span class="user-name">Alexandra</span>
-          </div>
-          <div class="chat-user">
-            <span class="circle"></span>
-            <span class="user-name">Petr</span>
-          </div>
-        </div>
+      <div class="userlist"></div>
         <div class="chat">
           <div class="message-viewing-area">
             <div class="interlocutor-s-message">
@@ -77,12 +70,12 @@ export default class Chat {
     const modal = this.container.querySelector('.modal');
     const modalForm = this.container.querySelector('.modal-form');
     const chatContainer = this.container.querySelector('.chat-container');
+    const userlist = this.container.querySelector('.userlist');
 
     modalForm.addEventListener('submit', (e)=> {
       e.preventDefault();
 
       const username = modal.querySelector('.modal-input');
-      console.log(username);
 
       this.api.create({name: username.value}, (response)=> {
         if (response.status === 'error') {
@@ -91,21 +84,118 @@ export default class Chat {
           return;
         };
 
-        console.log(response.status);
-
-
+        console.log(response);
+        this.user = response.user;
+        this.users.push(this.user);
+        const chatUser = document.createElement('div');
+        chatUser.classList.add('chat-user');
+        chatUser.innerHTML = `
+          <span class="circle"></span>
+          <span class="user-name">You</span>
+        `
+        userlist.appendChild(chatUser);
         chatContainer.classList.remove('hidden');
         modal.classList.add('hidden');
-      })
 
+        this.subscribeOnEvents();
+      })
+    })
+
+    const chatForm = this.container.querySelector('.chat-form');
+    const chatInput = this.container.querySelector('.chat-input');
+
+    chatForm.addEventListener('submit', (e)=> {
+      e.preventDefault();
+      const message = chatInput.value;
+      
+
+      if(!message) {
+        return;
+      };
+
+      this.sendMessage(message);
+      
+      chatInput.value = '';
     })
   }
 
-  subscribeOnEvents() {}
+  subscribeOnEvents() {
+    this.websocket = new WebSocket('ws://localhost:3000');
 
-  onEnterChatHandler() {}
+    this.websocket.onopen = (e) => {
+      console.log("Соединение установлено", e);
+    };
 
-  sendMessage() {}
+    this.websocket.onmessage = (event) => {
+      console.log("Получено сообщение:", event);
+      const data = JSON.parse(event.data);
+      
+      if (Array.isArray(data)) {
+        this.onEnterChatHandler(data);
+      } else if(data.user.id) {
+        this.currentUserId = data.user.id;
+      }
+    };
 
-  renderMessage() {}
+    this.websocket.onerror = (error) => {
+      console.error("Ошибка:", error);
+    };
+
+    this.websocket.onclose = (event) => {
+      console.log("Соединение закрыто", event.data);
+    };
+
+    
+  }
+
+  onEnterChatHandler(users) {
+    const userlist = this.container.querySelector('.userlist');
+    userlist.innerHTML = '';
+
+    users.forEach((user) => {
+      const chatUser = document.createElement('div');
+      chatUser.classList.add('chat-user');
+      chatUser.innerHTML = `
+        <span class="circle"></span>
+        <span class="user-name">${user.id === this.currentUserId ? 'You' : user.name}</span>
+      `
+      userlist.appendChild(chatUser);
+    })
+
+  }
+
+  sendMessage(message) {
+    this.websocket.send(JSON.stringify({
+      user: this.user,
+      type: 'send',
+      message: message
+    }))
+  }
+
+  renderMessage(message) {
+    const messageViewingArea = this.container.querySelector('.message-viewing-area');
+
+    const yourMessage = document.createElement('div');
+    yourMessage.classList.add('user-s-message');
+    yourMessage.innerHTML = `
+      <div class="user-s-information">
+        <span class="you-indicator">${message.user.name}</span>
+        <span class="yours-message-date">${this.currentDate()}</span>
+      </div>
+      <div class="your-message">
+        ${message.message}
+      </div>
+    `
+    messageViewingArea.appendChild(yourMessage);
+  }
+
+  currentDate() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const day = now.getDate();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    return `${hours}:${minutes} ${day}.${month}.${year}`;
+  }
 }
