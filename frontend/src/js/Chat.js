@@ -34,31 +34,12 @@ export default class Chat {
 
     chatContainer.innerHTML = `
       <div class="userlist"></div>
-        <div class="chat">
-          <div class="message-viewing-area">
-            <div class="interlocutor-s-message">
-              <div class="interlocutor-information">
-                <span class="interlocutor-name">Alexandra</span>
-                <span class="interlocutor-message-date">23:04 20.03.2019</span>
-              </div>
-              <div class="interlocutor-message-container">
-                I can't sleep...
-              </div>
-            </div>
-            <div class="user-s-message">
-              <div class="user-s-information">
-                <span class="you-indicator">You</span>
-                <span class="yours-message-date">23:10 20.03.2019</span>
-              </div>
-              <div class="your-message">
-                Try to count the sheep
-              </div>
-            </div>
-          </div>
-          <form class="chat-form">
-            <input class="chat-input" type="text" placeholder="Type your message here" required>
-          </form>
-        </div>
+      <div class="chat">
+        <div class="message-viewing-area"></div>
+        <form class="chat-form">
+          <input class="chat-input" type="text" placeholder="Type your message here" required>
+        </form>
+      </div>
     `
 
     container.appendChild(modal);
@@ -133,6 +114,8 @@ export default class Chat {
       
       if (Array.isArray(data)) {
         this.onEnterChatHandler(data);
+      } else {
+        this.renderMessage(data);
       }
     };
 
@@ -175,13 +158,13 @@ export default class Chat {
     const messageViewingArea = this.container.querySelector('.message-viewing-area');
 
     const yourMessage = document.createElement('div');
-    yourMessage.classList.add('user-s-message');
+    yourMessage.classList.add(message.user.id === this.currentUserId ? 'user-s-message' : 'interlocutor-s-message');
     yourMessage.innerHTML = `
-      <div class="user-s-information">
-        <span class="you-indicator">${message.user.name}</span>
-        <span class="yours-message-date">${this.currentDate()}</span>
+      <div class="${message.user.id === this.currentUserId ? 'user-s-information' : 'interlocutor-information'}">
+        <span class="name-indicator">${message.user.id === this.currentUserId ? 'You' : message.user.name}</span>
+        <span class="message-date">${this.currentDate()}</span>
       </div>
-      <div class="your-message">
+      <div class="theTextOfTheMessage">
         ${message.message}
       </div>
     `
