@@ -33,7 +33,10 @@ export default class Chat {
     chatContainer.classList.add('chat-container', 'hidden');
 
     chatContainer.innerHTML = `
-      <div class="userlist"></div>
+      <div class="left-bar">
+        <div class="userlist"></div>
+        <button class="exit-btn">Выход</button>
+      </div>
       <div class="chat">
         <div class="message-viewing-area"></div>
         <form class="chat-form">
@@ -52,6 +55,7 @@ export default class Chat {
     const modalForm = this.container.querySelector('.modal-form');
     const chatContainer = this.container.querySelector('.chat-container');
     const userlist = this.container.querySelector('.userlist');
+    const exit = this.container.querySelector('.exit-btn'); // кнопка выхода
 
     modalForm.addEventListener('submit', (e)=> {
       e.preventDefault();
@@ -81,6 +85,13 @@ export default class Chat {
 
         this.subscribeOnEvents();
       })
+    })
+
+    exit.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.exitUser(this.user);
+      chatContainer.classList.add('hidden');
+      modal.classList.remove('hidden');
     })
 
     const chatForm = this.container.querySelector('.chat-form');
@@ -124,7 +135,7 @@ export default class Chat {
     };
 
     this.websocket.onclose = (event) => {
-      console.log("Соединение закрыто", event.data);
+      console.log("Соединение закрыто", event);
     };
 
     
@@ -151,6 +162,13 @@ export default class Chat {
       user: this.user,
       type: 'send',
       message: message
+    }))
+  }
+
+  exitUser(user) {
+    this.websocket.send(JSON.stringify({
+      user: user,
+      type: 'exit'
     }))
   }
 
