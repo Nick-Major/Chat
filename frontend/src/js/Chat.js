@@ -1,5 +1,4 @@
 import ChatAPI from "./api/ChatAPI";
-import Entity from "./api/Entity";
 
 export default class Chat {
   constructor(container) {
