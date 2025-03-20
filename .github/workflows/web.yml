@@ -3,9 +3,9 @@ name: Chat
 on:
   push:
     branches:
-      - main  # Укажите ветку, с которой будет происходить деплой
+      - main
     paths:
-      - 'frontend/**'  # Триггерим workflow только при изменениях в папке frontend
+      - 'frontend/**'
 
 jobs:
   build-and-deploy:
@@ -20,10 +20,23 @@ jobs:
         with:
           node-version: 20
 
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: |
           cd frontend
           npm install
+
+      - name: Run ESLint
+        run: |
+          cd frontend
+          npm run lint
 
       - name: Build frontend
         run: |
@@ -34,4 +47,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: frontend/build  # Укажите папку, куда собирается фронтенд (например, build)
+          publish_dir: frontend/dist
